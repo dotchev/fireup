@@ -1,0 +1,3 @@
+processes:
+  - name: hello
+    cmd: echo "Hello world!"

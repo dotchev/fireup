@@ -1,0 +1,3 @@
+processes:
+  - name: print-me
+    cmd: node -e "console.log('first\n\nsecond');"

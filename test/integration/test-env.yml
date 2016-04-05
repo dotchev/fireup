@@ -1,0 +1,10 @@
+env:
+  VAR_A: aaa
+  VAR_B: bbb
+
+processes:
+  - name: test-env
+    cmd: node -e "console.log(process.env.VAR_A, process.env.VAR_B, process.env.VAR_C)"
+    env:
+      VAR_B: B2
+      VAR_C: C2
