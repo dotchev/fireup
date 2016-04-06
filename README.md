@@ -1,4 +1,4 @@
-siman
+siman [![Build Status](https://travis-ci.org/dotchev/siman.svg?branch=master)](https://travis-ci.org/dotchev/siman)
 =====
 
 Simple process launcher for local development
