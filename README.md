@@ -14,6 +14,7 @@ Cloud Foundry [manifest.yml](https://docs.cloudfoundry.org/devguide/deploy-apps/
 What's in:
 * Launch multiple processes as specified in one yaml file
 * Aggregate output of all processes in the same console
+* Multi-line environment variables
 * For each process specify
   * Shell command to start
   * Environment variables
