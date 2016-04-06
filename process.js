@@ -26,6 +26,7 @@ function Process(doc, proc, idx) {
 
 Process.prototype.start = function () {
   var file, args;
+  var self = this;
   // from exec implementation
   if (process.platform === 'win32') {
     file = process.env.comspec || 'cmd.exe';
@@ -38,18 +39,18 @@ Process.prototype.start = function () {
     env: this.env,
     cwd: this.dir
   });
-  this.info(`${this.name} started with pid ${child.pid}`);
+  this.info(this.name + ' started with pid ' + child.pid);
 
-  child.stdout.on('data', (data) => {
-    this.log(data.toString('utf8'));
+  child.stdout.on('data', function (data) {
+    self.log(data.toString('utf8'));
   });
 
-  child.stderr.on('data', (data) => {
-    this.log(data.toString('utf8'));
+  child.stderr.on('data', function (data) {
+    self.log(data.toString('utf8'));
   });
 
-  child.on('close', (code) => {
-    this.info(`${this.name} exited with code ${code}`);
+  child.on('close', function (code) {
+    self.info(self.name + ' exited with code ' + code);
   });
 }
 
