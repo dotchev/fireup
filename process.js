@@ -20,8 +20,9 @@ function Process(doc, proc, idx) {
   this.name = proc.name;
   this.cmd = proc.cmd;
   this.env = _.assign({}, process.env, doc.env, proc.env);
-  this.dir = proc.dir;
+  this.dir = proc.dir || doc.dir;
   this.color = colors[idx % colors.length];
+  this.doc = doc;
 }
 
 Process.prototype.start = function () {
@@ -56,7 +57,8 @@ Process.prototype.start = function () {
 
 Process.prototype.log = function (msg) {
   utils.splitLines(msg).forEach(function(line) {
-    console.log(this.color(this.name + '> ') + line);
+    var head = _.padEnd(this.name, this.doc.nameWidth) + '> ';
+    console.log(this.color(head) + line);
   }, this);
 };
 

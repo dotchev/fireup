@@ -12,9 +12,10 @@ var main = path.resolve('siman.js');
 
 function siman(args, options) {
   var ar = [main].concat(args || []);
-  options = _.assign({
+  options = _.merge({
     encoding: 'utf8',
-    cwd: __dirname
+    cwd: __dirname,
+    env: process.env
   }, options);
   return execFileSync(node, ar, options);
 }
@@ -62,4 +63,12 @@ describe('siman', function() {
     var out = siman(['test-env.yml']);
     expect(splitLines(out)[1]).equal('test-env> aaa B2 C2');
   });
+
+  it('should align messages from different processes', function() {
+    var out = siman(['proc2.yml']);
+    var lines = splitLines(out);
+    expect(lines).contain('p1   > Hello one');
+    expect(lines).contain('proc2> Hello two');
+  });
+
 });
