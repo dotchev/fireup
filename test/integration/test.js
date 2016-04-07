@@ -59,9 +59,22 @@ describe('siman', function() {
     ]);
   });
 
-  it('should start process with proper environment', function() {
-    var out = siman(['test-env.yml']);
-    expect(splitLines(out)[1]).equal('test-env> aaa B2 C2');
+  it('should start process with proper environment: current env > document env > process env', function() {
+    var out = siman(['../app/test-env.yml'], {
+      env: {
+        VAR_A1: 'a1',
+        VAR_A2: 'a2',
+        VAR_A3: 'a3'
+      }
+    });
+    expect(splitLines(out).slice(1, -1)).eql([
+      'print-env> VAR_A1=a1b',
+      'print-env> VAR_A2=a2c',
+      'print-env> VAR_A3=a3',
+      'print-env> VAR_B1=b1c',
+      'print-env> VAR_B2=b2',
+      'print-env> VAR_C1=c1',
+    ]);
   });
 
   it('should align messages from different processes', function() {
@@ -69,6 +82,15 @@ describe('siman', function() {
     var lines = splitLines(out);
     expect(lines).contain('p1   > Hello one');
     expect(lines).contain('proc2> Hello two');
+  });
+
+  it('should start process in proper workind directory: yml dir > process dir', function() {
+    var out = siman(['../app/test-cwd.yml']);
+    var lines = splitLines(out);
+    var testDir = path.dirname(__dirname);
+    expect(lines).contain('default-dir > ' + path.resolve(testDir, 'app'));
+    expect(lines).contain('relative-dir> ' + path.resolve(testDir, 'unit'));
+    expect(lines).contain('absolute-dir> ' + path.resolve('/'));
   });
 
 });

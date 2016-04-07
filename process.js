@@ -4,6 +4,7 @@ var _ = require('lodash');
 var chalk = require('chalk');
 var spawn = require('child_process').spawn;
 var utils = require('./utils');
+var path = require('path');
 
 module.exports = Process;
 
@@ -20,7 +21,7 @@ function Process(doc, proc, idx) {
   this.name = proc.name;
   this.cmd = proc.cmd;
   this.env = _.assign({}, process.env, doc.env, proc.env);
-  this.dir = proc.dir || doc.dir;
+  this.dir = proc.dir ? path.resolve(doc.dir, proc.dir) : doc.dir;
   this.color = colors[idx % colors.length];
   this.doc = doc;
 }
