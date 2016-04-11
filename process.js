@@ -29,18 +29,20 @@ function Process(doc, proc, idx) {
 Process.prototype.start = function () {
   var file, args;
   var self = this;
+  var options = {
+    env: this.env,
+    cwd: this.dir
+  };
   // from exec implementation
   if (process.platform === 'win32') {
     file = process.env.comspec || 'cmd.exe';
     args = ['/s', '/c', '"' + this.cmd + '"'];
+    options.windowsVerbatimArguments = true;
   } else {
     file = '/bin/sh';
     args = ['-c', this.cmd];
   }
-  var child = spawn(file, args, {
-    env: this.env,
-    cwd: this.dir
-  });
+  var child = spawn(file, args, options);
   this.info(this.name + ' started with pid ' + child.pid);
 
   child.stdout.on('data', function (data) {

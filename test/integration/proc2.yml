@@ -1,6 +1,6 @@
 processes:
   - name: p1
-    cmd: echo "Hello one"
+    cmd: echo Hello one
 
   - name: proc2
-    cmd: echo "Hello two"
+    cmd: echo Hello two

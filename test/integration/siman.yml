@@ -1,3 +1,3 @@
 processes:
   - name: hello
-    cmd: echo "Hello world!"
+    cmd: echo Hello world!
