@@ -8,9 +8,9 @@ var _ = require('lodash');
 var splitLines = require('../../utils').splitLines;
 
 var node = process.execPath;
-var main = path.resolve('siman.js');
+var main = path.resolve('fireup.js');
 
-function siman(args, options) {
+function fireup(args, options) {
   var ar = [main].concat(args || []);
   options = _.merge({
     encoding: 'utf8',
@@ -32,14 +32,14 @@ function matchLines(text, patterns) {
   }
 }
 
-describe('siman', function() {
-  it('should use siman.yml from current directory by default', function() {
-    var out = siman();
+describe('fireup', function() {
+  it('should use .fireup.yml from current directory by default', function() {
+    var out = fireup();
     expect(out).match(/^hello> Hello world!$/m);
   });
 
   it('should print child output', function() {
-    var out = siman(['print2.yml']);
+    var out = fireup(['print2.yml']);
     matchLines(out, [
       /^print2 started with pid \d+$/,
       'print2> first',
@@ -49,7 +49,7 @@ describe('siman', function() {
   });
 
   it('should prefix each line with process name', function() {
-    var out = siman(['print-me.yml']);
+    var out = fireup(['print-me.yml']);
     matchLines(out, [
       /^print-me started with pid \d+$/,
       'print-me> first',
@@ -60,7 +60,7 @@ describe('siman', function() {
   });
 
   it('should start process with proper environment: current env > document env > process env', function() {
-    var out = siman(['../app/test-env.yml'], {
+    var out = fireup(['../app/test-env.yml'], {
       env: {
         VAR_A1: 'a1',
         VAR_A2: 'a2',
@@ -78,14 +78,14 @@ describe('siman', function() {
   });
 
   it('should align messages from different processes', function() {
-    var out = siman(['proc2.yml']);
+    var out = fireup(['proc2.yml']);
     var lines = splitLines(out);
     expect(lines).contain('p1   > Hello one');
     expect(lines).contain('proc2> Hello two');
   });
 
   it('should start process in proper workind directory: yml dir > process dir', function() {
-    var out = siman(['../app/test-cwd.yml']);
+    var out = fireup(['../app/test-cwd.yml']);
     var lines = splitLines(out);
     var testDir = path.dirname(__dirname);
     expect(lines).contain('default-dir > ' + path.resolve(testDir, 'app'));

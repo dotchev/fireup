@@ -1,8 +1,8 @@
 {
-  "name": "siman",
+  "name": "fireup",
   "version": "0.1.0",
   "description": "Simple process launcher for local development",
-  "main": "siman.js",
+  "main": "fireup.js",
   "dependencies": {
     "chalk": "^1.1.3",
     "js-yaml": "^3.5.5",
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/dotchev/siman.git"
+    "url": "https://github.com/dotchev/fireup.git"
   },
   "keywords": [
     "foreman",
@@ -27,7 +27,7 @@
   "author": "Peter Dotchev",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dotchev/siman/issues"
+    "url": "https://github.com/dotchev/fireup/issues"
   },
-  "homepage": "https://github.com/dotchev/siman"
+  "homepage": "https://github.com/dotchev/fireup"
 }
