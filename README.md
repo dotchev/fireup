@@ -11,12 +11,15 @@ start multiple processes, each with its own options and environment.
 Using _siman_ we can do this with a single command and watch the output in a
 single console, just like a monolith application.
 
+![Screen](siman-screen.png)
+
 Inspired by [Foreman](http://blog.daviddollar.org/2011/05/06/introducing-foreman.html), [node-foreman](https://github.com/strongloop/node-foreman) and
 Cloud Foundry [manifest.yml](https://docs.cloudfoundry.org/devguide/deploy-apps/manifest.html).
 
 What's in:
-* Launch multiple processes as specified in one yaml file
+* Launch multiple processes with a single command
 * Aggregate output of all processes in the same console
+* All configuration in one yaml file
 * Multi-line environment variables
 * For each process specify
   * Shell command to start
