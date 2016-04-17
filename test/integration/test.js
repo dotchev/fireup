@@ -5,7 +5,7 @@ var assert = require('chai').assert;
 var path = require('path');
 var execFileSync = require('child_process').execFileSync;
 var _ = require('lodash');
-var splitLines = require('../../utils').splitLines;
+var splitLines = require('../../lib/utils').splitLines;
 
 var node = process.execPath;
 var main = path.resolve('fireup.js');

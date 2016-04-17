@@ -1,9 +1,11 @@
+#!/usr/bin/env node
+
 'use strict'
 
 var _ = require('lodash');
 var yaml = require('js-yaml');
 var fs   = require('fs');
-var Process = require('./process');
+var Process = require('./lib/process');
 var path = require('path');
 
 var file = process.argv[2] || '.fireup.yml';
