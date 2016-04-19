@@ -32,7 +32,67 @@ What's out:
 
 ## Install
 
+```sh
+$ [sudo] npm install -g fireup
+```
+
 ## Example
+
+**.fireup.yml**
+```yml
+processes:
+  - name: proxy
+    cmd: node proxy.js
+    env:
+      PORT: 8080
+      FORWARD: >
+        {
+          "target": "http://localhost:8181",
+          "tomeout": 15000
+        }
+
+  - name: app
+    cmd: node start.js
+    env:
+      PORT: 8181
+```
+```sh
+$ fup
+```
 ![Screen](screen.png)
 
 ## Reference
+
+### Command line
+
+```sh
+fup [<.fireup.yml>]
+```
+Start the processes defined in the given yaml file.
+By default loads `.fireup.yml` from current directory.
+
+### .fireup.yml
+
+#### processes
+
+List of processes to Start
+
+#### name
+
+Process name. Identifies the process in the output.
+
+#### cmd
+
+Shell command to start the Process
+
+#### env
+
+Additional environment variables for this process.
+Parent environment is inherited by the process.
+Can be used also at root level of `.fireup.yml` to define common environment variables for all processes.
+
+#### dir
+
+Process current working directory.
+By default the directory of `.fireup.yml` (base directory).
+If `dir` is relative, it is resolved from the base directory.
