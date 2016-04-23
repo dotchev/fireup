@@ -1,6 +1,8 @@
 [![Linux Build Status](https://travis-ci.org/dotchev/fireup.svg?branch=master)](https://travis-ci.org/dotchev/fireup)
 [![Windows Build status](https://ci.appveyor.com/api/projects/status/el189f26694rwblo/branch/master?svg=true)](https://ci.appveyor.com/project/dotchev/fireup/branch/master)
 
+![fireup](banner.png)
+
 fireup
 ======
 

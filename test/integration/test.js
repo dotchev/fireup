@@ -17,7 +17,18 @@ function fireup(args, options) {
     cwd: __dirname,
     env: process.env
   }, options);
-  return execFileSync(node, ar, options);
+  try {
+    return execFileSync(node, ar, options);
+  } catch(err) {
+    if (err.status === options.exitCode) {
+      return {
+        stdout: err.stdout.toString(),
+        stderr: err.stderr.toString()
+      }
+    } else {
+      throw err;
+    }
+  }
 }
 
 function matchLines(text, patterns) {
@@ -36,6 +47,43 @@ describe('fireup', function() {
   it('should use .fireup.yml from current directory by default', function() {
     var out = fireup();
     expect(out).match(/^hello> Hello world!$/m);
+  });
+
+  it('should print usage not error, if .fireup.yml is not present', function() {
+    var out = fireup([], {
+      cwd: __dirname + '/empty',
+      exitCode: 1
+    });
+    expect(out.stdout).match(/README.md/m);
+    expect(out.stdout).not.match(/Error/m);
+    expect(out.stderr).not.match(/Error/m);
+  });
+
+  it('should exit with error, if given file does not exist', function() {
+    var out = fireup(['no-such-file'], {
+      cwd: __dirname + '/empty',
+      exitCode: 1
+    });
+    expect(out.stdout).to.be.empty;
+    expect(out.stderr).to.match(/ENOENT.*no-such-file/m);
+    expect(out.stderr).to.not.match(/^\s*at\s+/m); // not stack trace
+  });
+
+  it('should print stack trace, if DEBUG is defined', function() {
+    var out = fireup(['no-such-file'], {
+      cwd: __dirname + '/empty',
+      env: { DEBUG: 'fireup' },
+      exitCode: 1
+    });
+    expect(out.stderr).to.match(/ENOENT.*no-such-file/m);
+    expect(out.stderr).to.match(/^\s*at\s+/m); // not stack trace
+  });
+
+  it('should exit with error, if given file is not valid YAML', function() {
+    var out = fireup(['invalid.yml'], {
+      exitCode: 1
+    });
+    expect(out.stderr).to.match(/YAML.*invalid\.yml/m);
   });
 
   it('should print child output', function() {
