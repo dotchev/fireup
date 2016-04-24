@@ -1,7 +1,8 @@
+![fireup](banner.png)
+
 [![Linux Build Status](https://travis-ci.org/dotchev/fireup.svg?branch=master)](https://travis-ci.org/dotchev/fireup)
 [![Windows Build status](https://ci.appveyor.com/api/projects/status/el189f26694rwblo/branch/master?svg=true)](https://ci.appveyor.com/project/dotchev/fireup/branch/master)
-
-![fireup](banner.png)
+[![npm](https://img.shields.io/npm/v/fireup.svg)](https://www.npmjs.com/package/fireup)
 
 fireup
 ======
@@ -98,3 +99,7 @@ Can be used also at root level of `.fireup.yml` to define common environment var
 Process current working directory.
 By default the directory of `.fireup.yml` (base directory).
 If `dir` is relative, it is resolved from the base directory.
+
+## License
+
+[MIT](LICENSE)
