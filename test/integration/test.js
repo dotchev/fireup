@@ -16,7 +16,7 @@ function fireup(args, options) {
     encoding: 'utf8',
     stdio: 'pipe',
     cwd: __dirname,
-    env: process.env
+    env: _.clone(process.env)
   }, options);
   return execFileSync(node, ar, options);
 }
@@ -45,15 +45,15 @@ function matchLines(text, patterns) {
   }
 }
 
-describe('fireup', function() {
+describe('fireup', function () {
   this.slow(500);
-  
-  it('should use .fireup.yml from current directory by default', function() {
+
+  it('should use .fireup.yml from current directory by default', function () {
     var out = fireup();
     expect(out).match(/^hello> Hello world!$/m);
   });
 
-  it('should print usage not error, if .fireup.yml is not present', function() {
+  it('should print usage not error, if .fireup.yml is not present', function () {
     var err = fireupErr([], {
       cwd: __dirname + '/empty'
     }, 1);
@@ -62,7 +62,7 @@ describe('fireup', function() {
     expect(err.stderr).not.match(/Error/m);
   });
 
-  it('should exit with error, if given file does not exist', function() {
+  it('should exit with error, if given file does not exist', function () {
     var err = fireupErr(['no-such-file'], {
       cwd: __dirname + '/empty'
     }, 1);
@@ -71,7 +71,7 @@ describe('fireup', function() {
     expect(err.stderr).to.not.match(/^\s*at\s+/m); // not stack trace
   });
 
-  it('should print stack trace, if DEBUG is defined', function() {
+  it('should print stack trace, if DEBUG is defined', function () {
     var err = fireupErr(['no-such-file'], {
       cwd: __dirname + '/empty',
       env: {
@@ -82,12 +82,22 @@ describe('fireup', function() {
     expect(err.stderr).to.match(/^\s*at\s+/m); // not stack trace
   });
 
-  it('should exit with error, if given file is not valid YAML', function() {
+  it('should exit with error, if given file is not valid YAML', function () {
     var err = fireupErr(['invalid.yml'], {}, 1);
     expect(err.stderr).to.match(/YAML.*invalid\.yml/m);
   });
 
-  it('should print child output', function() {
+  it('should exit with error, if YAML content is not an object', function () {
+    var err = fireupErr(['string.yml'], {}, 1);
+    expect(err.stderr).to.match(/Error.*string\.yml.*object/m);
+  });
+
+  it('should exit with error, if processes property is missing', function () {
+    var err = fireupErr(['no-processes.yml'], {}, 1);
+    expect(err.stderr).to.match(/Error.*no-processes\.yml.*processes/m);
+  });
+
+  it('should print child output', function () {
     var out = fireup(['print2.yml']);
     matchLines(out, [
       /^print2 started with pid \d+$/,
@@ -97,7 +107,7 @@ describe('fireup', function() {
     ]);
   });
 
-  it('should prefix each line with process name', function() {
+  it('should prefix each line with process name', function () {
     var out = fireup(['print-me.yml']);
     matchLines(out, [
       /^print-me started with pid \d+$/,
@@ -108,7 +118,7 @@ describe('fireup', function() {
     ]);
   });
 
-  it('should start process with proper environment: current env > document env > process env', function() {
+  it('should start process with proper environment: current env > document env > process env', function () {
     var out = fireup(['../app/test-env.yml'], {
       env: {
         VAR_A1: 'a1',
@@ -126,14 +136,14 @@ describe('fireup', function() {
     ]);
   });
 
-  it('should align messages from different processes', function() {
+  it('should align messages from different processes', function () {
     var out = fireup(['proc2.yml']);
     var lines = splitLines(out);
     expect(lines).contain('p1   > Hello one');
     expect(lines).contain('proc2> Hello two');
   });
 
-  it('should start process in proper workind directory: yml dir > process dir', function() {
+  it('should start process in proper workind directory: yml dir > process dir', function () {
     var out = fireup(['../app/test-cwd.yml']);
     var lines = splitLines(out);
     var testDir = path.dirname(__dirname);

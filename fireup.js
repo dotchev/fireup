@@ -10,6 +10,7 @@ var path = require('path');
 var chalk = require('chalk');
 var debug = require('debug')('fireup');
 var VError = require('verror');
+var utils = require('./lib/utils');
 
 function printUsage() {
   var banner = fs.readFileSync(path.join(__dirname, 'banner.txt'));
@@ -20,28 +21,37 @@ function printUsage() {
   console.log(require('./package.json').homepage);
 }
 
-try {
-  var file = process.argv[2] || '.fireup.yml';
+function validateDoc(doc) {
+  if (!doc || typeof doc !== 'object') {
+    throw new Error('Content is not an object');
+  }
+  if (!doc.processes) {
+    throw new Error('Missing mandatory property "processes"');
+  }
+}
+
+function loadDoc(fileParam) {
+  var file = fileParam || '.fireup.yml';
   try {
-    var content = fs.readFileSync(file, 'utf8');
+    var doc = yaml.safeLoad(fs.readFileSync(file, 'utf8'));
+    validateDoc(doc);
   } catch(err) {
-    if (!process.argv[2] && err.code === 'ENOENT') {
-      printUsage();
-      process.exit(1);
-    }
-    throw err;
+    throw new VError(err, 'Error loading YAML file %s', file);
   }
-  try {
-    var doc = yaml.safeLoad(content);
-  } catch (err) {
-    throw new VError(err, 'Error parsing YAML from %s', file);
-  }
-  // TODO check doc is an object
   doc.dir = path.dirname(path.resolve(file));
   doc.nameWidth = _.max(doc.processes.map(function(proc) {
     return proc.name.length;
   }));
+  return doc;
+}
 
+try {
+  var file = process.argv[2];
+  if (!file && !utils.exists('.fireup.yml')) {
+      printUsage();
+      process.exit(1);
+  }
+  var doc = loadDoc(file);
   var psList = doc.processes.map(function(proc, idx) {
     return new Process(doc, proc, idx);
   });
