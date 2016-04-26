@@ -1,3 +1,3 @@
 processes:
-  - name: print2
+  print2:
     cmd: node -e "console.log('first'); console.log('second');"

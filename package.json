@@ -20,8 +20,9 @@
     "verror": "^1.6.1"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
     "mocha": "^2.4.5",
-    "chai": "^3.5.0"
+    "sinon": "^1.17.3"
   },
   "scripts": {
     "test": "./node_modules/.bin/mocha test/unit test/integration"

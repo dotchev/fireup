@@ -4,7 +4,7 @@ env:
   VAR_B2: b2
 
 processes:
-  - name: print-env
+  print-env:
     cmd: node print-env.js VAR_A1 VAR_A2 VAR_A3 VAR_B1 VAR_B2 VAR_C1
     env:
       VAR_A2: a2c

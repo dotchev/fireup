@@ -44,7 +44,7 @@ $ [sudo] npm install -g fireup
 **fireup.yml**
 ```yml
 processes:
-  - name: proxy
+  proxy:
     cmd: node proxy.js
     env:
       PORT: 8080
@@ -54,7 +54,7 @@ processes:
           "tomeout": 15000
         }
 
-  - name: app
+  app:
     cmd: node start.js
     env:
       PORT: 8181
@@ -78,15 +78,13 @@ By default loads `fireup.yml` from current directory.
 
 #### processes
 
-List of processes to Start
-
-#### name
-
-Process name. Identifies the process in the output.
+Each property describes a processes to start.
+The property name is the process name.
 
 #### cmd
 
 Shell command to start the Process
+_Mandatory_
 
 #### env
 
