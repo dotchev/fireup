@@ -16,7 +16,7 @@ function printUsage() {
   var banner = fs.readFileSync(path.join(__dirname, 'banner.txt'));
   console.log(chalk.red(banner));
   console.log('Simple process launcher for local development');
-  console.log('Put .fireup.yml in current directory or pass it as a parameter');
+  console.log('Put fireup.yml in current directory or pass it as a parameter');
   console.log('See %s for details', path.join(__dirname, 'README.md'));
   console.log(require('./package.json').homepage);
 }
@@ -31,7 +31,7 @@ function validateDoc(doc) {
 }
 
 function loadDoc(fileParam) {
-  var file = fileParam || '.fireup.yml';
+  var file = fileParam || 'fireup.yml';
   try {
     var doc = yaml.safeLoad(fs.readFileSync(file, 'utf8'));
     validateDoc(doc);
@@ -47,7 +47,7 @@ function loadDoc(fileParam) {
 
 try {
   var file = process.argv[2];
-  if (!file && !utils.exists('.fireup.yml')) {
+  if (!file && !utils.exists('fireup.yml')) {
       printUsage();
       process.exit(1);
   }

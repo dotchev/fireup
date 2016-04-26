@@ -48,12 +48,12 @@ function matchLines(text, patterns) {
 describe('fireup', function () {
   this.slow(500);
 
-  it('should use .fireup.yml from current directory by default', function () {
+  it('should use fireup.yml from current directory by default', function () {
     var out = fireup();
     expect(out).match(/^hello> Hello world!$/m);
   });
 
-  it('should print usage not error, if .fireup.yml is not present', function () {
+  it('should print usage not error, if fireup.yml is not present', function () {
     var err = fireupErr([], {
       cwd: __dirname + '/empty'
     }, 1);

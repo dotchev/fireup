@@ -41,7 +41,7 @@ $ [sudo] npm install -g fireup
 
 ## Example
 
-**.fireup.yml**
+**fireup.yml**
 ```yml
 processes:
   - name: proxy
@@ -69,12 +69,12 @@ $ fup
 ### Command line
 
 ```sh
-fup [<.fireup.yml>]
+fup [<fireup.yml>]
 ```
 Start the processes defined in the given yaml file.
-By default loads `.fireup.yml` from current directory.
+By default loads `fireup.yml` from current directory.
 
-### .fireup.yml
+### fireup.yml
 
 #### processes
 
@@ -92,12 +92,12 @@ Shell command to start the Process
 
 Additional environment variables for this process.
 Parent environment is inherited by the process.
-Can be used also at root level of `.fireup.yml` to define common environment variables for all processes.
+Can be used also at root level of `fireup.yml` to define common environment variables for all processes.
 
 #### dir
 
 Process current working directory.
-By default the directory of `.fireup.yml` (base directory).
+By default the directory of `fireup.yml` (base directory).
 If `dir` is relative, it is resolved from the base directory.
 
 ## License
