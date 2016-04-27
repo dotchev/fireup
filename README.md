@@ -83,7 +83,7 @@ The property name is the process name.
 
 #### cmd
 
-Shell command to start the Process
+Shell command to start the process
 _Mandatory_
 
 #### env
