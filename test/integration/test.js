@@ -4,13 +4,15 @@ var expect = require('chai').expect;
 var assert = require('chai').assert;
 var path = require('path');
 var execFileSync = require('child_process').execFileSync;
+var execFile = require('child_process').execFile;
 var _ = require('lodash');
 var splitLines = require('../../lib/utils').splitLines;
+var http = require('http');
 
 var node = process.execPath;
 var main = path.resolve('fireup.js');
 
-function fireup(args, options) {
+function fireup(args, options, cb) {
   var ar = [main].concat(args || []);
   options = _.merge({
     encoding: 'utf8',
@@ -18,7 +20,9 @@ function fireup(args, options) {
     cwd: __dirname,
     env: _.clone(process.env)
   }, options);
-  return execFileSync(node, ar, options);
+  return (typeof cb === 'function') ?
+    execFile(node, ar, options, cb) :
+    execFileSync(node, ar, options);
 }
 
 function fireupErr(args, options, exitCode) {
@@ -152,4 +156,28 @@ describe('fireup', function () {
     expect(lines).contain('absolute-dir> ' + path.resolve('/'));
   });
 
+  it('should merge output form different processes', function (done) {
+    var child = fireup(['../app/ping-pong.yml'], {}, function (err, stdout, stderr) {
+      var lines = splitLines(stdout);
+      if (lines.length != 10) {
+        console.log('complete:', err, stdout, stderr);
+        return done(new Error('Bad output'));
+      }
+      expect(lines.slice(4, 8)).eql([
+        'ping> GET /4',
+        'pong> GET /3',
+        'ping> GET /2',
+        'pong> GET /1']);
+      done();
+    });
+    setTimeout(function () {
+      http.get('http://localhost:8000/4', function (res) {
+        child.kill('SIGINT');
+      }).on('error', function (err) {
+        child.kill('SIGINT');
+        done(err);
+      });
+    }, 500);
+
+  });
 });
