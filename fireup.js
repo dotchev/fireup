@@ -2,7 +2,7 @@
 
 'use strict'
 
-var fs   = require('fs');
+var fs = require('fs');
 var Process = require('./lib/process');
 var path = require('path');
 var chalk = require('chalk');
@@ -19,11 +19,11 @@ function printUsage() {
   console.log(require('./package.json').homepage);
 }
 
-try {
+function main() {
   var file = process.argv[2];
   if (!file && !utils.exists('fireup.yml')) {
-      printUsage();
-      process.exit(1);
+    printUsage();
+    process.exit(1);
   }
   var doc = load(file);
   var ps = {}
@@ -31,7 +31,17 @@ try {
     ps[p] = new Process(doc, p);
     ps[p].start();
   }
-} catch(err) {
+
+  process.on('SIGINT', function () {
+    for (p in ps) {
+      ps[p].kill('SIGINT');
+    }
+  });
+}
+
+try {
+  main();
+} catch (err) {
   console.error(err.message);
   debug(err);
   process.exit(1);
