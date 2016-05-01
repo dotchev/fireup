@@ -33,6 +33,7 @@ function main() {
   }
 
   process.on('SIGINT', function () {
+    debug('User interrupt, killing all processes');
     for (p in ps) {
       ps[p].kill('SIGINT');
     }

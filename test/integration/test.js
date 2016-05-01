@@ -38,14 +38,20 @@ function fireupErr(args, options, exitCode) {
 }
 
 function matchLines(text, patterns) {
-  var lines = splitLines(text);
-  expect(lines.length).equal(patterns.length);
-  for (var i = 0; i < lines.length; ++i) {
-    if (typeof patterns[i] === 'string') {
-      expect(lines[i]).equal(patterns[i]);
-    } else {
-      expect(lines[i]).match(patterns[i]);
+  try {
+    var lines = splitLines(text);
+    expect(lines.length).equal(patterns.length);
+    for (var i = 0; i < lines.length; ++i) {
+      if (typeof patterns[i] === 'string') {
+        expect(lines[i]).equal(patterns[i]);
+      } else {
+        expect(lines[i]).match(patterns[i]);
+      }
     }
+  } catch (err) {
+    console.error(err)
+    console.error('got text:\n' + text);
+    throw err;
   }
 }
 
@@ -178,6 +184,20 @@ describe('fireup', function () {
         done(err);
       });
     }, 500);
+  });
 
+  it('should forward SIGINT (Ctrl-C) to child process', function (done) {
+    var child = fireup(['../app/sigint.yml'], {}, function (err, stdout, stderr) {
+      matchLines(stdout, [
+        /sigint started with pid \d+/,
+        'sigint> Waiting 5s ...',
+        'sigint> got SIGINT',
+        'sigint exited with code 55'
+      ]);
+      done();
+    });
+    setTimeout(function () {
+      child.kill('SIGINT');
+    }, 500);
   });
 });
