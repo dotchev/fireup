@@ -161,6 +161,17 @@ describe('fireup', function () {
     expect(lines).contain('absolute-dir> ' + path.resolve('/'));
   });
 
+  it('should support multi-line string (YAML block literals)', function () {
+    var out = fireup(['multi-line-strings.yml']);
+    matchLines(out, [
+      /^ml-env started/,
+      'ml-env> line one',
+      'ml-env> line two',
+      'ml-env> single line',
+      'ml-env exited with code 0'
+    ]);
+  });
+
   it('should merge output form different processes', function (done) {
     var child = fireup(['../app/ping-pong.yml'], {}, function (err, stdout, stderr) {
       var lines = splitLines(stdout);

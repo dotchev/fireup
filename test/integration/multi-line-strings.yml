@@ -1,0 +1,12 @@
+processes:
+  ml-env:
+    cmd: >
+      node -e "process.stdout.write(process.env.ML_NO_FOLD);
+      process.stdout.write(process.env.ML_FOLD);"
+    env:
+      ML_NO_FOLD: |
+        line one
+        line two
+      ML_FOLD: >
+        single
+        line
