@@ -81,7 +81,7 @@ describe('fireup', function () {
     expect(err.stderr).to.not.match(/^\s*at\s+/m); // not stack trace
   });
 
-  it('should print stack trace, if DEBUG is defined', function () {
+  it('should print stack trace on error, if DEBUG is defined', function () {
     var err = fireupErr(['no-such-file'], {
       cwd: __dirname + '/empty',
       env: {
@@ -95,16 +95,6 @@ describe('fireup', function () {
   it('should exit with error, if given file is not valid YAML', function () {
     var err = fireupErr(['invalid.yml'], {}, 1);
     expect(err.stderr).to.match(/YAML.*invalid\.yml/m);
-  });
-
-  it('should exit with error, if YAML content is not an object', function () {
-    var err = fireupErr(['string.yml'], {}, 1);
-    expect(err.stderr).to.match(/Error.*string\.yml.*object/m);
-  });
-
-  it('should exit with error, if processes property is missing', function () {
-    var err = fireupErr(['no-processes.yml'], {}, 1);
-    expect(err.stderr).to.match(/Error.*no-processes\.yml.*processes/m);
   });
 
   it('should print child output', function () {
@@ -151,6 +141,15 @@ describe('fireup', function () {
     var lines = splitLines(out);
     expect(lines).contain('p1   > Hello one');
     expect(lines).contain('proc2> Hello two');
+  });
+
+  it('should run two processes with one shell command', function () {
+    var out = fireup(['proc2in1.yml']);
+    var lines = splitLines(out);
+    expect(lines.slice(1, 3)).eql([
+      'proc> Hello one',
+      'proc> Hello two'
+    ]);
   });
 
   it('should start process in proper workind directory: yml dir > process dir', function () {

@@ -37,5 +37,51 @@ describe('doc', function () {
         dir: path.resolve('/a/b')
       });
     });
+
+    it('if process is a string, should assign it to cmd property', function () {
+      fs.readFileSync.returns(
+        "processes:\n" +
+        "  proc: start proc");
+      expect(load()).eql({
+        processes: {
+          proc: {
+            cmd: 'start proc'
+          }
+        },
+        nameWidth: 4,
+        dir: path.resolve('.')
+      });
+    });
+
+    it('should throw error, if YAML content is not an object', function () {
+      fs.readFileSync.returns("a string");
+      expect(load).to.throw(/YAML content should be an object/);
+    });
+
+    it('should throw error, if processes property is missing', function () {
+      fs.readFileSync.returns("a: b");
+      expect(load).to.throw(/"processes" property should be an object/);
+    });
+
+    it('should throw error, if processes property is not an object', function () {
+      fs.readFileSync.returns("processes: abc");
+      expect(load).to.throw(/"processes" property should be an object/);
+    });
+
+    it('should throw error, if a process property is a number', function () {
+      fs.readFileSync.returns(
+        "processes:\n" +
+        "  proc: 4");
+      expect(load).to.throw(/"proc" property should be a string or an object/);
+    });
+
+    it('should throw error, if cmd property is missing', function () {
+      fs.readFileSync.returns(
+        "processes:\n" +
+        "  proc:\n" +
+        "    dir: /path");
+      expect(load).to.throw(/proc.cmd should be a string/);
+    });
+
   });
 });

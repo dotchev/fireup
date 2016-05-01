@@ -1,0 +1,2 @@
+processes:
+  proc: echo Hello one && echo Hello two

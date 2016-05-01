@@ -1,3 +1,2 @@
 processes:
-  sigint:
-    cmd: node sigint
+  sigint: node sigint

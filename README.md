@@ -78,8 +78,15 @@ By default loads `fireup.yml` from current directory.
 
 #### processes
 
-Each property describes a processes to start.
+An object inside which each property describes a processes to start.
 The property name is the process name.
+The value can be a shell command to start the respective process.
+Alternatively it can be an object specifying additional process properties.
+
+```yml
+processes:
+  app: node start.js
+```
 
 #### cmd
 
