@@ -8,6 +8,7 @@ var execFile = require('child_process').execFile;
 var _ = require('lodash');
 var splitLines = require('../../lib/utils').splitLines;
 var http = require('http');
+var requestR = require('requestretry');
 
 var node = process.execPath;
 var main = path.resolve('fireup.js');
@@ -124,14 +125,14 @@ describe('fireup', function () {
         VAR_A3: 'a3'
       }
     });
-    expect(splitLines(out).slice(1, -1)).eql([
+    matchLines(out, [
       'print-env> VAR_A1=a1b',
       'print-env> VAR_A2=a2c',
       'print-env> VAR_A3=a3',
       'print-env> VAR_B1=b1c',
       'print-env> VAR_B2=b2',
       'print-env> VAR_C1=c1',
-    ]);
+    ], 1, -1);
   });
 
   it('should align messages from different processes', function () {
@@ -143,11 +144,10 @@ describe('fireup', function () {
 
   it('should run two processes with one shell command', function () {
     var out = fireup(['proc2in1.yml']);
-    var lines = splitLines(out);
-    expect(lines.slice(1, 3)).eql([
+    matchLines(out, [
       'proc> Hello one',
       'proc> Hello two'
-    ]);
+    ], 1, 3);
   });
 
   it('should start process in proper workind directory: yml dir > process dir', function () {
@@ -170,7 +170,7 @@ describe('fireup', function () {
     ]);
   });
 
-  it('should merge output form different processes', function (done) {
+  it('should merge output from different processes', function (done) {
     var child = fireup(['../app/ping-pong.yml'], {}, function (err, stdout, stderr) {
       if (err) { return done(err); }
       matchLines(stdout, [
@@ -180,36 +180,37 @@ describe('fireup', function () {
         'pong> GET /1'], 4, 8);
       done();
     });
-    setTimeout(function () {
-      http.get('http://localhost:8000/4', function (res) {
-        http.get('http://localhost:8000/exit');
-        http.get('http://localhost:9000/exit');
-      }).on('error', function (err) {
-        child.kill('SIGINT');
-        done(err);
-      });
-    }, 500);
+    requestR({
+      url: 'http://localhost:8000/4',
+      maxAttempts: 10,
+      retryDelay: 200,
+      retryStrategy: requestR.RetryStrategies.NetworkError
+    }, function(err, response, body) {
+      err && console.error('request error:', err);
+      http.get('http://localhost:8000/exit');
+      http.get('http://localhost:9000/exit');
+    });
   });
 
-if (process.platform !== 'win32') {
-  /*
-  On Windows sending SIGINT, SIGTERM, and SIGKILL cause the unconditional
-  termination of the target process.
-  */
-  it('should forward SIGINT (Ctrl-C) to child process', function (done) {
-    var child = fireup(['../app/sigint.yml'], {}, function (err, stdout, stderr) {
-      matchLines(stdout, [
-        /sigint started with pid \d+/,
-        'sigint> Waiting 5s ...',
-        'sigint> got SIGINT',
-        'sigint exited with code 55'
-      ]);
-      done();
+  if (process.platform !== 'win32') {
+    /*
+    On Windows sending SIGINT, SIGTERM, and SIGKILL cause the unconditional
+    termination of the target process.
+    */
+    it('should forward SIGINT (Ctrl-C) to child process', function (done) {
+      var child = fireup(['../app/sigint.yml'], {}, function (err, stdout, stderr) {
+        matchLines(stdout, [
+          /sigint started with pid \d+/,
+          'sigint> Waiting 5s ...',
+          'sigint> got SIGINT',
+          'sigint exited with code 55'
+        ]);
+        done();
+      });
+      setTimeout(function () {
+        child.kill('SIGINT');
+      }, 500);
     });
-    setTimeout(function () {
-      child.kill('SIGINT');
-    }, 500);
-  });
-}
+  }
 
 });
