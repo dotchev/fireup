@@ -8,7 +8,6 @@ var execFile = require('child_process').execFile;
 var _ = require('lodash');
 var splitLines = require('../../lib/utils').splitLines;
 var http = require('http');
-var requestR = require('requestretry');
 
 var node = process.execPath;
 var main = path.resolve('fireup.js');
@@ -170,26 +169,13 @@ describe('fireup', function () {
     ]);
   });
 
-  it('should merge output from different processes', function (done) {
-    var child = fireup(['../app/ping-pong.yml'], {}, function (err, stdout, stderr) {
-      if (err) { return done(err); }
-      matchLines(stdout, [
-        'ping> GET /4',
-        'pong> GET /3',
-        'ping> GET /2',
-        'pong> GET /1'], 4, 8);
-      done();
-    });
-    requestR({
-      url: 'http://localhost:8000/4',
-      maxAttempts: 10,
-      retryDelay: 200,
-      retryStrategy: requestR.RetryStrategies.NetworkError
-    }, function(err, response, body) {
-      err && console.error('request error:', err);
-      http.get('http://localhost:8000/exit');
-      http.get('http://localhost:9000/exit');
-    });
+  it('should merge output from different processes', function () {
+    var out = fireup(['../app/ping-pong.yml']);
+    matchLines(out, [
+      'ping> GET /4',
+      'pong> GET /3',
+      'ping> GET /2',
+      'pong> GET /1'], 4, 8);
   });
 
   if (process.platform !== 'win32') {

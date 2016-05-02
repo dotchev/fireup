@@ -1,3 +1,6 @@
+env:
+  MAX_ATTEMPTS: 10
+  RETRY_DELAY: 200
 processes:
   ping:
     cmd: node ping
@@ -5,7 +8,7 @@ processes:
       PORT: 8000
       PEER: http://localhost:9000
   pong:
-    cmd: node ping
+    cmd: node ping 4
     env:
       PORT: 9000
       PEER: http://localhost:8000
