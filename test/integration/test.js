@@ -37,11 +37,10 @@ function fireupErr(args, options, exitCode) {
   }
 }
 
-function matchLines(text, patterns) {
+function matchLines(text, patterns, begin, end) {
   try {
-    var lines = splitLines(text);
-    expect(lines.length).equal(patterns.length);
-    for (var i = 0; i < lines.length; ++i) {
+    var lines = splitLines(text).slice(begin, end);
+    for (var i = 0; i < patterns.length; ++i) {
       if (typeof patterns[i] === 'string') {
         expect(lines[i]).equal(patterns[i]);
       } else {
@@ -49,7 +48,6 @@ function matchLines(text, patterns) {
       }
     }
   } catch (err) {
-    console.error(err)
     console.error('got text:\n' + text);
     throw err;
   }
@@ -174,21 +172,18 @@ describe('fireup', function () {
 
   it('should merge output form different processes', function (done) {
     var child = fireup(['../app/ping-pong.yml'], {}, function (err, stdout, stderr) {
-      var lines = splitLines(stdout);
-      if (lines.length != 10) {
-        console.log('complete:', err, stdout, stderr);
-        return done(new Error('Bad output'));
-      }
-      expect(lines.slice(4, 8)).eql([
+      if (err) { return done(err); }
+      matchLines(stdout, [
         'ping> GET /4',
         'pong> GET /3',
         'ping> GET /2',
-        'pong> GET /1']);
+        'pong> GET /1'], 4, 8);
       done();
     });
     setTimeout(function () {
       http.get('http://localhost:8000/4', function (res) {
-        child.kill('SIGINT');
+        http.get('http://localhost:8000/exit');
+        http.get('http://localhost:9000/exit');
       }).on('error', function (err) {
         child.kill('SIGINT');
         done(err);
@@ -196,6 +191,11 @@ describe('fireup', function () {
     }, 500);
   });
 
+if (process.platform !== 'win32') {
+  /*
+  On Windows sending SIGINT, SIGTERM, and SIGKILL cause the unconditional
+  termination of the target process.
+  */
   it('should forward SIGINT (Ctrl-C) to child process', function (done) {
     var child = fireup(['../app/sigint.yml'], {}, function (err, stdout, stderr) {
       matchLines(stdout, [
@@ -210,4 +210,6 @@ describe('fireup', function () {
       child.kill('SIGINT');
     }, 500);
   });
+}
+
 });

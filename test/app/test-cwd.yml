@@ -1,11 +1,11 @@
 processes:
   default-dir:
-    cmd: node -e "console.log(process.cwd());"
+    cmd: node -p "process.cwd()"
 
   relative-dir:
     dir: ../unit
-    cmd: node -e "console.log(process.cwd());"
+    cmd: node -p "process.cwd()"
 
   absolute-dir:
     dir: /
-    cmd: node -e "console.log(process.cwd());"
+    cmd: node -p "process.cwd()"

@@ -20,6 +20,11 @@ var server = http.createServer(function (req, res) {
       res.writeHead(200);
       res.end();
     }
+  } else if (req.url === '/exit') {
+    res.writeHead(200);
+    res.end();
+    console.log('Bye');
+    server.close();
   } else {
     res.writeHead(400);
     res.end('No TTL');

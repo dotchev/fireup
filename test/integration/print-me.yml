@@ -1,2 +1,2 @@
 processes:
-  print-me: node -e "console.log('first\n\nsecond');"
+  print-me: node -p "'first\n\nsecond'"

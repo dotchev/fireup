@@ -1,2 +1,2 @@
 processes:
-  proc: echo Hello one && echo Hello two
+  proc: node -p "'Hello one'" && node -p "'Hello two'"
