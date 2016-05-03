@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "Simple process launcher for local development",
   "main": "fireup.js",
-  "bin": {
-    "fup": "./fireup.js"
-  },
+  "bin": "./fireup.js",
   "files": [
     "banner.png",
     "banner.txt",

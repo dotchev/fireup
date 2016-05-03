@@ -25,6 +25,9 @@ What's in:
   * Environment variables
   * Working directory
 * Common env vars for all processes
+* Tested on
+  * Linux
+  * Windows
 
 What's out:
 * Scaling (multiple instances of one process type)
@@ -60,7 +63,7 @@ processes:
       PORT: 8181
 ```
 ```sh
-$ fup
+$ fireup
 ```
 ![Screen](screen.png)
 
@@ -69,7 +72,7 @@ $ fup
 ### Command line
 
 ```sh
-fup [<fireup.yml>]
+fireup [<fireup.yml>]
 ```
 Start the processes defined in the given yaml file.
 By default loads `fireup.yml` from current directory.
