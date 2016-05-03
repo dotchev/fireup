@@ -105,6 +105,11 @@ Process current working directory.
 By default the directory of `fireup.yml` (base directory).
 If `dir` is relative, it is resolved from the base directory.
 
+## History
+
+See [release history](https://github.com/dotchev/fireup/releases) in GitHub.
+There are breaking changes since version 1.
+
 ## License
 
 [MIT](LICENSE)
