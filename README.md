@@ -115,6 +115,14 @@ If `dir` is relative, it is resolved from the base directory.
 See [release history](https://github.com/dotchev/fireup/releases) in GitHub.
 There are breaking changes since version 1.
 
+## Credits
+
+Graffiti font used in the banner is designed by Leigh Purdie.
+
+I borrowed some insights from [node-foreman](https://github.com/strongloop/node-foreman).
+
+And of course all the open source projects used here.
+
 ## License
 
 [MIT](LICENSE)
