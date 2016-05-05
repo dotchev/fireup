@@ -69,6 +69,15 @@ $ fireup
 ```
 ![Screen](screen.png)
 
+**Note:** the pid displayed is actually the id of the shell process which in turn starts the respective process as a child.
+
+The process tree looks like this:
+* fireup
+  * shell 1
+    * process 1
+  * shell 2
+    * process 2
+
 ## Reference
 
 ### Command line
