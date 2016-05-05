@@ -38,6 +38,8 @@ What's out:
 
 ## Install
 
+Install [Node.js](https://nodejs.org/) unless you have it already.
+
 ```sh
 $ [sudo] npm install -g fireup
 ```
